@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,body{height:100%}
+.modal-bg{background:rgba(0,0,0,.6)}
+:root{ --brand:#FFC947; }
+.btn-primary{ @apply text-white; background:var(--brand); }
+.badge{ @apply bg-black/60 text-white text-[11px] font-semibold px-1.5 py-0.5 rounded-md; }
+@media (min-width:320px){ body{ padding-bottom: 96px } }
+
+/* Line clamp utility for multi-line truncation with ellipsis */
+.line-clamp-3{
+  display:-webkit-box;
+  -webkit-line-clamp:3;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+
+/* Force long unbroken strings to wrap without overflowing */
+.break-anywhere{ overflow-wrap:anywhere; word-break:break-word; }

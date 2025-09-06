@@ -1,0 +1,13 @@
+venv
+.venv
+__pycache__/
+node_modules/
+.env
+.env.*
+*.sqlite3
+.next
+dist
+media
+staticfiles
+!.env.local.sample
+
