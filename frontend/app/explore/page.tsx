@@ -7,7 +7,7 @@ import ImageLightbox from "@/components/ImageLightbox"
 import CommentsModal from "@/components/CommentsModal"
 import { Heart, CommentIcon, Ellipsis, Bookmark } from "@/components/Icons"
 import { toggleLike } from "@/lib/api"
-const backend = process.env.NEXT_PUBLIC_BACKEND_URL as string
+const backend = "/api"
 type Post = {
   id: number
   image_url: string
@@ -39,7 +39,7 @@ export default function Explore(){
     }catch(_){ setItems(prev=> prev.map(p=> p.id===id? { ...p, is_saved: !p.is_saved }: p)) }
   }
   useEffect(()=>{ const t = localStorage.getItem("access"); if(!t){ r.replace("/login"); return }
-    setAccess(t); fetch(`${backend}/api/auth/explore/`,{ headers:{ Authorization:`Bearer ${t}` } })
+    setAccess(t); fetch(`${backend}/auth/explore/`,{ headers:{ Authorization:`Bearer ${t}` } })
       .then(res=>res.json()).then(setItems).finally(()=> setLoading(false))
   },[r])
   const onLike = async (id: number) => {

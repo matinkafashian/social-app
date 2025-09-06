@@ -2,7 +2,7 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 
-const backend = process.env.NEXT_PUBLIC_BACKEND_URL as string
+const backend = "/api"
 
 export default function Page(){
   const router = useRouter()
@@ -15,7 +15,7 @@ export default function Page(){
   async function onSubmit(e:React.FormEvent){
     e.preventDefault(); setError(""); setLoading(true)
     try{
-      const res = await fetch(`${backend}/api/auth/login/`,{
+      const res = await fetch(`${backend}/auth/login/`,{
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify({email,password})

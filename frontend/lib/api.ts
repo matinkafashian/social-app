@@ -1,8 +1,8 @@
-const backend = process.env.NEXT_PUBLIC_BACKEND_URL as string
+const backend = "/api"
 
 export async function toggleLike(postId: number) {
   const token = localStorage.getItem("access")
-  const r = await fetch(`${backend}/api/posts/${postId}/like/`, {
+  const r = await fetch(`${backend}/posts/${postId}/like/`, {
     method: "POST",
     headers: token ? { Authorization: `Bearer ${token}` } : {}
   })
@@ -21,7 +21,7 @@ export async function createPost(image: File, caption?: string, categories?: str
     form.append("categories", JSON.stringify(categories))
   }
   
-  const r = await fetch(`${backend}/api/auth/posts/`, {
+  const r = await fetch(`${backend}/auth/posts/`, {
     method: "POST",
     headers: { Authorization: `Bearer ${token}` },
     body: form
@@ -40,7 +40,7 @@ export async function updateProfile(profileData: {
   const token = localStorage.getItem("access")
   if (!token) throw new Error("not authenticated")
   
-  const r = await fetch(`${backend}/api/auth/profile/`, {
+  const r = await fetch(`${backend}/auth/profile/`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -58,7 +58,7 @@ export async function updateProfile(profileData: {
 export async function fetchCategoryPosts(category: string, offset = 0, limit = 20){
   const token = localStorage.getItem("access")
   if (!token) throw new Error("not authenticated")
-  const r = await fetch(`${backend}/api/auth/categories/${encodeURIComponent(category)}/posts/?offset=${offset}&limit=${limit}`,{
+  const r = await fetch(`${backend}/auth/categories/${encodeURIComponent(category)}/posts/?offset=${offset}&limit=${limit}`,{
     headers:{ Authorization:`Bearer ${token}` }
   })
   if(!r.ok) throw new Error("failed to load category posts")
@@ -68,7 +68,7 @@ export async function fetchCategoryPosts(category: string, offset = 0, limit = 2
 export async function getPost(postId:number){
   const token = localStorage.getItem("access")
   if (!token) throw new Error("not authenticated")
-  const r = await fetch(`${backend}/api/auth/posts/${postId}/`,{ headers:{ Authorization:`Bearer ${token}` } })
+  const r = await fetch(`${backend}/auth/posts/${postId}/`,{ headers:{ Authorization:`Bearer ${token}` } })
   if(!r.ok) throw new Error("failed to load post")
   return r.json()
 }
@@ -79,7 +79,7 @@ export async function updatePost(postId:number, data:{ caption?:string; categori
   const payload: any = {}
   if(data.caption!==undefined) payload.caption = data.caption
   if(data.categories) payload.categories = data.categories
-  const r = await fetch(`${backend}/api/auth/posts/${postId}/`,{
+  const r = await fetch(`${backend}/auth/posts/${postId}/`,{
     method:"PUT",
     headers:{ "Content-Type":"application/json", Authorization:`Bearer ${token}` },
     body: JSON.stringify(payload)
@@ -91,7 +91,7 @@ export async function updatePost(postId:number, data:{ caption?:string; categori
 export async function deletePost(postId:number){
   const token = localStorage.getItem("access")
   if (!token) throw new Error("not authenticated")
-  const r = await fetch(`${backend}/api/auth/posts/${postId}/`,{ method:"DELETE", headers:{ Authorization:`Bearer ${token}` } })
+  const r = await fetch(`${backend}/auth/posts/${postId}/`,{ method:"DELETE", headers:{ Authorization:`Bearer ${token}` } })
   if(!r.ok) throw new Error("failed to delete post")
   return r.json().catch(()=>({ok:true}))
 }
@@ -99,7 +99,7 @@ export async function deletePost(postId:number){
 export async function toggleSave(postId:number){
   const token = localStorage.getItem("access")
   if (!token) throw new Error("not authenticated")
-  const r = await fetch(`${backend}/api/auth/posts/${postId}/save/`,{ method:"POST", headers:{ Authorization:`Bearer ${token}` } })
+  const r = await fetch(`${backend}/auth/posts/${postId}/save/`,{ method:"POST", headers:{ Authorization:`Bearer ${token}` } })
   if(!r.ok) throw new Error("save failed")
   return r.json() as Promise<{ saved: boolean }>
 }
@@ -107,7 +107,7 @@ export async function toggleSave(postId:number){
 export async function fetchSaved(){
   const token = localStorage.getItem("access")
   if (!token) throw new Error("not authenticated")
-  const r = await fetch(`${backend}/api/auth/saved/`,{ headers:{ Authorization:`Bearer ${token}` } })
+  const r = await fetch(`${backend}/auth/saved/`,{ headers:{ Authorization:`Bearer ${token}` } })
   if(!r.ok) throw new Error("failed to load saved posts")
   return r.json()
 }

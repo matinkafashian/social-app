@@ -1,13 +1,13 @@
 "use client"
 import { useEffect, useState } from "react"
 export default function CommentsModal({postId, open, onClose, onUpdated}:{postId:number|null, open:boolean, onClose:()=>void, onUpdated?:(postId:number, count:number)=>void}){
-  const backend = process.env.NEXT_PUBLIC_BACKEND_URL as string
+  const backend = "/api"
   const [items,setItems]=useState<{id:number,text:string,created_at:string,author:string}[]>([])
   const [text,setText]=useState(""); const [busy,setBusy]=useState(false)
   useEffect(()=>{
     if(!open || !postId) return
     const t = localStorage.getItem("access"); if(!t) return
-    fetch(`${backend}/api/auth/posts/${postId}/comments/`,{ headers:{ Authorization:`Bearer ${t}` } })
+    fetch(`${backend}/auth/posts/${postId}/comments/`,{ headers:{ Authorization:`Bearer ${t}` } })
       .then(r=>r.json()).then(d=> setItems(d.items || []))
       .catch(err => console.error('Failed to load comments:', err))
   },[open,postId,backend])
@@ -16,11 +16,11 @@ export default function CommentsModal({postId, open, onClose, onUpdated}:{postId
     setBusy(true)
     const t = localStorage.getItem("access"); if(!t) return
     try {
-      const res = await fetch(`${backend}/api/auth/posts/${postId}/comments/`,{ method:"POST", headers:{ "Content-Type":"application/json", Authorization:`Bearer ${t}` }, body: JSON.stringify({ text }) })
+      const res = await fetch(`${backend}/auth/posts/${postId}/comments/`,{ method:"POST", headers:{ "Content-Type":"application/json", Authorization:`Bearer ${t}` }, body: JSON.stringify({ text }) })
       const data = await res.json().catch(()=>({}))
       if(res.ok){
         setText("")
-        const r = await fetch(`${backend}/api/auth/posts/${postId}/comments/`,{ headers:{ Authorization:`Bearer ${t}` }}).then(x=>x.json())
+        const r = await fetch(`${backend}/auth/posts/${postId}/comments/`,{ headers:{ Authorization:`Bearer ${t}` }}).then(x=>x.json())
         setItems(r.items || [])
         if(onUpdated && typeof data.comment_count === 'number') onUpdated(postId, data.comment_count)
       } else {

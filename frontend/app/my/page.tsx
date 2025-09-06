@@ -7,7 +7,7 @@ import ImageLightbox from "@/components/ImageLightbox"
 import CommentsModal from "@/components/CommentsModal"
 import { Ellipsis } from "@/components/Icons"
 
-const backend = process.env.NEXT_PUBLIC_BACKEND_URL as string
+const backend = "/api"
 type Post = { id:number; image_url:string; likes_count:number; comment_count:number; categories?: string[] }
 
 export default function MyPosts(){
@@ -22,16 +22,16 @@ export default function MyPosts(){
   
   useEffect(()=>{ const t = localStorage.getItem("access"); if(!t){ r.replace("/login"); return }
     Promise.all([
-      fetch(`${backend}/api/auth/my-posts/`,{ headers:{ Authorization:`Bearer ${t}` } }).then(res=>res.json()),
-      fetch(`${backend}/api/auth/profile/`,{ headers:{ Authorization:`Bearer ${t}` } }).then(res=>res.json()),
-      fetch(`${backend}/api/auth/saved/`,{ headers:{ Authorization:`Bearer ${t}` } }).then(res=>res.json())
+      fetch(`${backend}/auth/my-posts/`,{ headers:{ Authorization:`Bearer ${t}` } }).then(res=>res.json()),
+      fetch(`${backend}/auth/profile/`,{ headers:{ Authorization:`Bearer ${t}` } }).then(res=>res.json()),
+      fetch(`${backend}/auth/saved/`,{ headers:{ Authorization:`Bearer ${t}` } }).then(res=>res.json())
     ]).then(([p,pr,sv])=>{ setPosts(p||[]); setProfile(pr||null); setSaved(sv||[]) }).finally(()=> setLoading(false))
   },[r])
   
   useEffect(()=>{
     const reload = ()=>{
       const t = localStorage.getItem("access"); if(!t) return
-      fetch(`${backend}/api/auth/my-posts/`,{ headers:{ Authorization:`Bearer ${t}` } }).then(res=>res.json()).then(setPosts)
+      fetch(`${backend}/auth/my-posts/`,{ headers:{ Authorization:`Bearer ${t}` } }).then(res=>res.json()).then(setPosts)
     }
     window.addEventListener("post-created", reload)
     return ()=> window.removeEventListener("post-created", reload)

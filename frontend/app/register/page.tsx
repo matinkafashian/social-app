@@ -2,7 +2,7 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 
-const backend = process.env.NEXT_PUBLIC_BACKEND_URL as string
+const backend = "/api"
 
 export default function Page(){
   const router = useRouter()
@@ -22,7 +22,7 @@ export default function Page(){
     if(!agree){ setError("Please agree to the Terms and Privacy Policy"); return }
     setLoading(true)
     try{
-      const res = await fetch(`${backend}/api/auth/register/`,{
+      const res = await fetch(`${backend}/auth/register/`,{
         method:"POST", headers:{"Content-Type":"application/json"},
         body:JSON.stringify({email,password})
       })

@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import BottomNav from "@/components/BottomNav"
-const backend = process.env.NEXT_PUBLIC_BACKEND_URL as string
+const backend = "/api"
 const IRAN_CITIES = ["Tehran","Mashhad","Isfahan","Shiraz","Tabriz","Karaj","Qom","Ahvaz","Kermanshah","Yazd"];
 const CATEGORIES = ["Sports","Science","Health","Nature","Politics","Technology"];
 export default function Onboarding(){
@@ -20,7 +20,7 @@ export default function Onboarding(){
     const t = typeof window!=="undefined"? localStorage.getItem("access"): null
     if(!t){ r.replace("/login"); return }
     setToken(t)
-    fetch(`${backend}/api/auth/profile/`,{ headers:{ Authorization:`Bearer ${t}` } })
+    fetch(`${backend}/auth/profile/`,{ headers:{ Authorization:`Bearer ${t}` } })
       .then(res=>res.json()).then(data=>{
         if(data.photo_url) setPhotoUrl(data.photo_url)
         if(data.handle) setHandle(data.handle)
@@ -35,7 +35,7 @@ export default function Onboarding(){
     const f = e.target.files?.[0]; if(!f || !token) return
     try{
       const form = new FormData(); form.append("photo", f)
-      const res = await fetch(`${backend}/api/auth/profile/photo/`,{ method:"POST", headers:{ Authorization:`Bearer ${token}` }, body: form })
+      const res = await fetch(`${backend}/auth/profile/photo/`,{ method:"POST", headers:{ Authorization:`Bearer ${token}` }, body: form })
       const data = await res.json(); if(!res.ok) throw new Error(data.detail||"upload failed")
       setPhotoUrl(data.photo_url || null)
     } finally { if(fileRef.current) fileRef.current.value = "" }
@@ -44,7 +44,7 @@ export default function Onboarding(){
     if(!v){ setAvailable(null); return }
     setChecking(true)
     try{
-      const res = await fetch(`${backend}/api/auth/username-check/?handle=${encodeURIComponent(v)}`,{ headers:{ Authorization:`Bearer ${token}` || "" }})
+      const res = await fetch(`${backend}/auth/username-check/?handle=${encodeURIComponent(v)}`,{ headers:{ Authorization:`Bearer ${token}` || "" }})
       const data = await res.json(); setAvailable(!!data.available)
     } finally { setChecking(false) }
   }
@@ -53,7 +53,7 @@ export default function Onboarding(){
     if(!handle){ setError("username is required"); return }
     setSaving(true); setError(null)
     try{
-      const res = await fetch(`${backend}/api/auth/profile/`,{ method:"PUT", headers:{ "Content-Type":"application/json", Authorization:`Bearer ${token}` || "" }, body: JSON.stringify({ handle, city, categories, bio, age }) })
+      const res = await fetch(`${backend}/auth/profile/`,{ method:"PUT", headers:{ "Content-Type":"application/json", Authorization:`Bearer ${token}` || "" }, body: JSON.stringify({ handle, city, categories, bio, age }) })
       if(!res.ok){ const d = await res.json().catch(()=>({})); throw new Error(d.detail || `save failed (${res.status})`) }
       r.replace("/feed")
     } catch(e:any){ setError(e.message || "save failed") } finally { setSaving(false) }

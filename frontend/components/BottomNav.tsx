@@ -2,7 +2,7 @@
 import { useRouter, usePathname } from "next/navigation"
 import { HomeIcon, SearchIcon, UserIcon, Plus } from "@/components/Icons"
 import { useRef, useState } from "react"
-const backend = process.env.NEXT_PUBLIC_BACKEND_URL
+const backend = "/api"
 export default function BottomNav(){
   const r = useRouter()
   const pathname = usePathname() || "/"

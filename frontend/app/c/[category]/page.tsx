@@ -8,8 +8,7 @@ export default function Page({ params }: { params: { category: string } }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const base = process.env.NEXT_PUBLIC_BACKEND_URL || "";
-    const url = `${base}/api/auth/feed/?tag=${encodeURIComponent(tag)}`;
+    const url = `/api/auth/feed/?tag=${encodeURIComponent(tag)}`;
     fetch(url, { credentials: "include" })
       .then(r => r.json())
       .then(d => setItems(d.results || d || []))

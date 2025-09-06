@@ -6,7 +6,7 @@ import TopBar from "@/components/TopBar"
 import ImageLightbox from "@/components/ImageLightbox"
 import CommentsModal from "@/components/CommentsModal"
 
-const backend = process.env.NEXT_PUBLIC_BACKEND_URL as string
+const backend = "/api"
 type Post = { id:number; image_url:string; likes_count:number; comment_count:number }
 
 export default function UserProfile(){
@@ -23,8 +23,8 @@ export default function UserProfile(){
   useEffect(()=>{
     const t = localStorage.getItem("access"); if(!t){ r.replace("/login"); return }
     Promise.all([
-      fetch(`${backend}/api/auth/users/${encodeURIComponent(handle)}/`,{ headers:{ Authorization:`Bearer ${t}` } }).then(res=>res.json()),
-      fetch(`${backend}/api/auth/users/${encodeURIComponent(handle)}/posts/`,{ headers:{ Authorization:`Bearer ${t}` } }).then(res=>res.json())
+      fetch(`${backend}/auth/users/${encodeURIComponent(handle)}/`,{ headers:{ Authorization:`Bearer ${t}` } }).then(res=>res.json()),
+      fetch(`${backend}/auth/users/${encodeURIComponent(handle)}/posts/`,{ headers:{ Authorization:`Bearer ${t}` } }).then(res=>res.json())
     ]).then(([i,p])=>{ if(i && i.handle){ setInfo(i); setPosts(p||[]) } else { r.replace("/feed") }}).finally(()=> setLoading(false))
   },[r,handle])
 
@@ -56,7 +56,7 @@ export default function UserProfile(){
                       const t = localStorage.getItem("access"); if(!t || !info) return
                       setInfo(prev=> prev? {...prev, is_following: !prev.is_following, followers: (prev.followers||0) + (prev.is_following?-1:1) } : prev)
                       try{
-                        const res = await fetch(`${backend}/api/auth/users/${encodeURIComponent(handle)}/follow/`, { method:"POST", headers:{ Authorization:`Bearer ${t}` }})
+                        const res = await fetch(`${backend}/auth/users/${encodeURIComponent(handle)}/follow/`, { method:"POST", headers:{ Authorization:`Bearer ${t}` }})
                         const data = await res.json().catch(()=>({}))
                         if(res.ok){
                           setInfo(prev=> prev? {

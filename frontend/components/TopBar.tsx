@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Ellipsis, Bell } from "@/components/Icons"
-const backend = process.env.NEXT_PUBLIC_BACKEND_URL as string
+const backend = "/api"
 export default function TopBar({title}:{title:string}){
   const r = useRouter()
   const [q,setQ]=useState(""); const [suggest,setSuggest]=useState<{handle:string,photo_url:string|null}[]>([])
@@ -11,7 +11,7 @@ export default function TopBar({title}:{title:string}){
   const timerRef = useRef<number|undefined>(undefined)
   useEffect(()=>{
     const t = localStorage.getItem("access"); if(!t){ r.replace("/login"); return }
-    const load = ()=>{ fetch(`${backend}/api/auth/notifications`,{ headers:{ Authorization:`Bearer ${t}` } })
+    const load = ()=>{ fetch(`${backend}/auth/notifications`,{ headers:{ Authorization:`Bearer ${t}` } })
       .then(r=>r.json()).then(d=>{ setNotifs(d.items||[]); setUnread(d.unread||0) }) }
     load(); timerRef.current = window.setInterval(load, 60000);
     const wsUrl = (backend||"").replace(/^http/,'ws') + `/ws/notifications?token=${t}`
@@ -28,20 +28,20 @@ export default function TopBar({title}:{title:string}){
   },[r])
   async function markAllRead(){
     const t = localStorage.getItem("access"); if(!t) return
-    await fetch(`${backend}/api/auth/notifications/read-all`,{ method:"POST", headers:{ Authorization:`Bearer ${t}` } })
+    await fetch(`${backend}/auth/notifications/read-all`,{ method:"POST", headers:{ Authorization:`Bearer ${t}` } })
     setUnread(0); setNotifs(prev=> prev.map(n=> ({...n, is_read:true})))
   }
   async function onSearchChange(v:string){
     setQ(v); const t = localStorage.getItem("access"); if(!t) return
     if(!v){ setSuggest([]); return }
-    const data = await fetch(`${backend}/api/auth/search-users?q=${encodeURIComponent(v)}`, { headers:{ Authorization:`Bearer ${t}` } }).then(r=>r.json())
+    const data = await fetch(`${backend}/auth/search-users?q=${encodeURIComponent(v)}`, { headers:{ Authorization:`Bearer ${t}` } }).then(r=>r.json())
     setSuggest(data.items || [])
   }
   function toggleNotif(){
     setOpenNotif(v=>{
       const nv = !v; if(nv){
         const t = localStorage.getItem("access"); if(!t) return nv
-        fetch(`${backend}/api/auth/notifications`,{ headers:{ Authorization:`Bearer ${t}` } })
+        fetch(`${backend}/auth/notifications`,{ headers:{ Authorization:`Bearer ${t}` } })
           .then(r=>r.json()).then(d=>{ setNotifs(d.items||[]); setUnread(d.unread||0) })
       }
       return nv
