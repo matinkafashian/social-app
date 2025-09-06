@@ -117,7 +117,7 @@ export default function MyPosts(){
                 {p.categories && p.categories.length>0 && (
                   <div className="absolute top-1 left-1 right-1 flex flex-wrap gap-1">
                     {p.categories.map((c, idx)=> (
-                      <button key={idx} onClick={()=>r.push(`/c/${encodeURIComponent(c)}`)} className="px-1.5 py-0.5 rounded-full bg-black/60 text-white text-[10px] hover:bg-black/70">{c}</button>
+                      <button key={idx} onClick={()=>r.push(`/c/${encodeURIComponent((c || "").toLowerCase())}`)} className="px-1.5 py-0.5 rounded-full bg-black/60 text-white text-[10px] hover:bg-black/70">{c}</button>
                     ))}
                   </div>
                 )}

@@ -94,7 +94,7 @@ export default function Explore(){
           {p.categories && p.categories.length>0 && (
             <div className="px-2 pb-2 flex flex-wrap gap-2">
               {p.categories.map((c, idx)=> (
-                <button key={idx} onClick={()=>r.push(`/c/${encodeURIComponent(c)}`)} className="px-2 py-0.5 rounded-full bg-gray-200 text-gray-800 text-xs hover:bg-gray-300">{c}</button>
+                <button key={idx} onClick={()=>r.push(`/c/${encodeURIComponent((c || "").toLowerCase())}`)} className="px-2 py-0.5 rounded-full bg-gray-200 text-gray-800 text-xs hover:bg-gray-300">{c}</button>
               ))}
             </div>
           )}
